@@ -60,13 +60,15 @@ public class LazyMap implements IPending, Iterable, Associative, IPersistentColl
   // IPersistentMap
 
   public IPersistentMap assoc(Object key, Object val) {
-    load();
-    return data.assoc(key, val);
+    IPersistentMap res = data.assoc(key, val);
+    if (loader != null) return new LazyMap(res, loader);
+    return res;
   }
 
   public IPersistentMap assocEx(Object key, Object val) {
-    load();
-    return data.assocEx(key, val);
+    IPersistentMap res = data.assocEx(key, val);
+    if (loader != null) return new LazyMap(res, loader);
+    return res;
   }
 
   public IPersistentMap without(Object key) {

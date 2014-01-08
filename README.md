@@ -16,14 +16,15 @@ as its sole argument.
             (fn [seed] {:baz (inc (:bar seed))})))
 ```
 
-The loader function will not be called until necessary. It is triggered
-transparently by one of the following:
+The loader function will not be called until necessary.
 
-* A read on a key that is not part of the seed
-* Any operation that uses the seqable or collection abstractions (`count`, `seq`, etc.)
-* Map ops like `assoc`, `dissoc`, `merge`, etc. This might change in the future -
-  for example, `assoc` could return another lazy map with a different seed, and
-  so on.
+## Realization
+
+Realization is triggered transparently by one of the following:
+
+* A read on a key that is not part of the seed.
+* Any operation that uses the seqable or collection abstractions (`count`, `seq` and so on).
+* Certain map ops like `merge` or `dissoc` (see [notes](#notes) below).
 
 ```clojure
 user=> lm
@@ -41,6 +42,11 @@ user=> lm
 user=> (realized? lm)
 true
 ```
+
+Operations that won't realize a lazy map include:
+
+* `assoc`, as it always returns another lazy map with a modified seed.
+* `select-keys`, _if_ all the selected keys are present in the seed.
 
 ## Does it act like an immutable map?
 
@@ -80,6 +86,19 @@ The decision to prevent `print-method` from realizing the map comes also from
 this use. Circular references in the database would make a REPL keep on loading
 objects forever otherwise (that is, until the heap is blown by the output
 buffer).
+
+## Notes
+
+The `dissoc` operation realizes the map even if the key to be removed is in the
+seed. The reason for this is that we cannot allow something like the following
+to happen:
+
+```clojure
+user=> (def lm (lazy-map {:foo 1 :bar 2} (fn [_] {:bar 3})))
+#'user/lm
+user=> (:bar (dissoc lm :bar))
+3
+```
 
 ## License
 

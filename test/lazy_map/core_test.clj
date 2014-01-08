@@ -1,5 +1,6 @@
 (ns lazy-map.core-test
-  (:import (java.io Writer StringWriter))
+  (:import (java.io Writer StringWriter)
+           (lazy_map LazyMap))
   (:use clojure.test
         lazy-map.core))
 
@@ -21,6 +22,9 @@
     (print-method obj sw)
     (str sw)))
 
+(defn- seed-keys [m]
+  (-> m .getData keys set))
+
 ; Tests
 
 (deftest key-in-seed
@@ -34,14 +38,31 @@
     (is (= 200 (:bar m)))
     (is (realized? m))))
 
-(deftest seed-kept
+(deftest seed-is-kept
   (let [m (lazy-map {:foo "old"}
-                    (fn [x] {:foo "new" :bar 123}))]
+                    (fn [x] {:foo "new"}))]
     (is (= "old" (:foo m)))
-    (:bar m)
+    (doall m)
+    (is (realized? m))
     (is (= "old" (:foo m)))))
 
-(deftest map-ops
+(deftest map-assoc
+  (let [m (test-map)]
+    (is (= #{:foo :lol}
+           (seed-keys (assoc m :lol 999))))
+    (is (= #{:foo}
+           (seed-keys m))
+        "Original map was mutated by `assoc`")))
+
+(deftest map-dissoc
+  (let [m (lazy-map {:foo 1}
+                    (fn [_] {:foo 2}))
+        n (dissoc m :foo)]
+    (is (empty? (keys n)))
+    (is (realized? m))
+    (isnt (instance? LazyMap n))))
+
+(deftest map-ops-and-equality
   (let [plain {:foo 100 :bar 200}]
     (are [fun] (= (fun plain)
                   (fun (test-map)))
@@ -51,9 +72,7 @@
          count
          #(contains? % :foo)
          #(contains? % :bar)
-         #(contains? % :lol)
-         #(assoc % :lol 999)
-         #(dissoc % :foo))))
+         #(contains? % :lol))))
 
 (deftest printing
   (let [m (test-map)]
