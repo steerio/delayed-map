@@ -7,18 +7,16 @@ public class LazyMap implements IPending, Iterable, Associative, IPersistentColl
   private static IFn merge = RT.var("clojure.core", "merge");
   private IPersistentMap data;
   private IFn loader;
-  private boolean pending;
 
   public LazyMap(IPersistentMap seed, IFn loader) {
     data = seed;
     this.loader = loader;
-    pending = true;
   }
 
   private void load() {
-    if (pending) {
+    if (loader != null) {
       data = (IPersistentMap) merge.invoke(loader.invoke(data), data);
-      pending = false;
+      loader = null;
     }
   }
 
@@ -33,7 +31,7 @@ public class LazyMap implements IPending, Iterable, Associative, IPersistentColl
   // IPending
 
   public boolean isRealized() {
-    return !pending;
+    return loader == null;
   }
 
   // Iterable
