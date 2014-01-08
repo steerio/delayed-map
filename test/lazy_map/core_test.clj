@@ -47,12 +47,14 @@
     (is (= "old" (:foo m)))))
 
 (deftest map-assoc
-  (let [m (test-map)]
+  (let [m (test-map)
+        n (assoc m :lol 999)]
+    (is (instance? LazyMap n))
     (is (= #{:foo :lol}
-           (seed-keys (assoc m :lol 999))))
+           (seed-keys n)))
     (is (= #{:foo}
-           (seed-keys m))
-        "Original map was mutated by `assoc`")))
+           (seed-keys m)) "Original map was mutated by `assoc`")
+    (isnt (realized? m))))
 
 (deftest map-dissoc
   (let [m (lazy-map {:foo 1}
