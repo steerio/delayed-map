@@ -58,10 +58,10 @@ I came up with the idea while coding a new, soon to be released client library
 for the [Parse](http://parse.com) platform.
 
 The [Parse API](https://www.parse.com/docs/rest) returns so-called
-[pointers](https://www.parse.com/docs/rest#objects-types) when a value of a
-field is another database object. These are nothing more than a map with the
-model class name and the object id; if you need the full object, you need to
-load it based on this.
+[pointers](https://www.parse.com/docs/rest#objects-types) when a value in a
+field is another database object. A pointer is nothing more than a map with the
+model class name and the object ID; if you need the full object, you have to
+load it based on this information.
 
 This process can be made transparent using lazy maps for pointers, delaying the
 actual request until it becomes necessary.
@@ -77,7 +77,7 @@ actual request until it becomes necessary.
 ```
 
 The decision to prevent `print-method` from realizing the map comes also from
-here; circular references in the database would make a REPL keep on loading
+this use. Circular references in the database would make a REPL keep on loading
 objects forever otherwise (that is, until the heap is blown by the output
 buffer).
 
