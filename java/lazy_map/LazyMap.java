@@ -44,7 +44,12 @@ public class LazyMap implements IPending, Iterable, Associative, IPersistentColl
   // Associative
 
   public boolean containsKey(Object key) {
-    return data.containsKey(key);
+    if (data.containsKey(key)) {
+      return true;
+    } else {
+      load();
+      return data.containsKey(key);
+    }
   }
 
   public IMapEntry entryAt(Object key) {

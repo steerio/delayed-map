@@ -42,13 +42,16 @@
     (is (= "old" (:foo m)))))
 
 (deftest map-ops
-  (let [lazy (test-map)
-        plain {:foo 100 :bar 200}]
-    (are [fun] (= (fun plain) (fun lazy))
+  (let [plain {:foo 100 :bar 200}]
+    (are [fun] (= (fun plain)
+                  (fun (test-map)))
          keys
          vals
          seq
          count
+         #(contains? % :foo)
+         #(contains? % :bar)
+         #(contains? % :lol)
          #(assoc % :lol 999)
          #(dissoc % :foo))))
 
