@@ -45,7 +45,8 @@ true
 
 Operations that won't realize a lazy map include:
 
-* `assoc`, as it always returns another lazy map with a modified seed.
+* `assoc`, as it always returns another lazy map with a modified seed for not
+  yet realized lazy maps (it returns a regular map for realized ones).
 * `select-keys`, _if_ all the selected keys are present in the seed.
 
 ## Does it act like an immutable map?
