@@ -13,7 +13,7 @@ public class LazyMap implements IPending, Iterable, Associative, IPersistentColl
     this.loader = loader;
   }
 
-  private void load() {
+  private synchronized void load() {
     if (loader != null) {
       data = (IPersistentMap) merge.invoke(loader.invoke(data), data);
       loader = null;
