@@ -14,5 +14,7 @@
           (.write w ", "))
         (.write w "...}")))))
 
-(definline lazy-map [seed fun]
-  `(LazyMap. ~seed ~fun))
+(definline lazy-map
+  "Creates a lazy map with the given seed map and loader function."
+  [seed loader]
+  `(LazyMap. ~seed ~loader))
