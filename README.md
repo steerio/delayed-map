@@ -2,6 +2,14 @@
 
 A small Clojure library that implements a two-stage map.
 
+## Installation
+
+Include the following dependency in your `project.clj` file:
+
+```clojure
+:dependencies [[lazy-map "0.1.0-SNAPSHOT"]]
+```
+
 ## Usage
 
 A lazy map is defined by a "seed" map and a loader function that returns
