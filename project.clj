@@ -1,4 +1,4 @@
-(defproject com.wopata/lazy-map "0.1.0-SNAPSHOT"
+(defproject lazy-map "0.1.0-SNAPSHOT"
   :description "Lazy Map"
   :url "http://github.com/steerio/lazy-map"
   :java-source-paths ["java"]
