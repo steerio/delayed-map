@@ -1,5 +1,5 @@
 (defproject delayed-map "0.1.0-SNAPSHOT"
-  :description "Lazy Map"
+  :description "Delayed Map"
   :url "http://github.com/steerio/delayed-map"
   :java-source-paths ["java"]
   :license {:name "Eclipse Public License"
