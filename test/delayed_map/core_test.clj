@@ -1,8 +1,8 @@
-(ns lazy-map.core-test
+(ns delayed-map.core-test
   (:import (java.io Writer StringWriter)
-           (lazy_map LazyMap))
+           (delayed_map DelayedMap))
   (:use clojure.test
-        lazy-map.core))
+        delayed-map.core))
 
 ; Helpers
 
@@ -13,7 +13,7 @@
    `(is (not ~form) ~msg)))
 
 (defn- test-map []
-  (lazy-map
+  (delayed-map
     {:foo 100}
     (fn [seed] {:bar (* 2 (:foo seed))})))
 
@@ -39,7 +39,7 @@
     (is (realized? m))))
 
 (deftest seed-is-kept
-  (let [m (lazy-map {:foo "old"}
+  (let [m (delayed-map {:foo "old"}
                     (fn [x] {:foo "new"}))]
     (is (= "old" (:foo m)))
     (doall m)
@@ -49,7 +49,7 @@
 (deftest map-assoc
   (let [m (test-map)
         n (assoc m :lol 999)]
-    (is (instance? LazyMap n))
+    (is (instance? DelayedMap n))
     (is (= #{:foo :lol}
            (seed-keys n)))
     (is (= #{:foo}
@@ -57,12 +57,12 @@
     (isnt (realized? m))))
 
 (deftest map-dissoc
-  (let [m (lazy-map {:foo 1}
+  (let [m (delayed-map {:foo 1}
                     (fn [_] {:foo 2}))
         n (dissoc m :foo)]
     (is (empty? (keys n)))
     (is (realized? m))
-    (isnt (instance? LazyMap n))))
+    (isnt (instance? DelayedMap n))))
 
 (deftest map-ops-and-equality
   (let [plain {:foo 100 :bar 200}]

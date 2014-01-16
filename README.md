@@ -1,4 +1,4 @@
-# lazy-map
+# delayed-map
 
 A small Clojure library that implements a two-stage map.
 
@@ -7,20 +7,20 @@ A small Clojure library that implements a two-stage map.
 Include the following dependency in your `project.clj` file:
 
 ```clojure
-:dependencies [[lazy-map "0.1.0-SNAPSHOT"]]
+:dependencies [[delayed-map "0.1.0-SNAPSHOT"]]
 ```
 
 ## Usage
 
-A lazy map is defined by a "seed" map and a loader function that returns
+A delayed map is defined by a "seed" map and a loader function that returns
 another map, the rest of the key-value pairs. This function receives the seed
 as its sole argument.
 
 ```clojure
-(use 'lazy-map.core)
+(use 'delayed-map.core)
 
 (def lm
-  (lazy-map {:foo 1 :bar 2}
+  (delayed-map {:foo 1 :bar 2}
             (fn [seed] {:baz (inc (:bar seed))})))
 ```
 
@@ -51,10 +51,10 @@ user=> (realized? lm)
 true
 ```
 
-Operations that won't realize a lazy map include:
+Operations that won't realize a delayed map include:
 
-* `assoc`, as it always returns another lazy map with a modified seed for not
-  yet realized lazy maps (it returns a regular map for realized ones).
+* `assoc`, as it always returns another delayed map with a modified seed for
+  not yet realized delayed maps (it returns a regular map for realized ones).
 * `select-keys`, _if_ all the selected keys are present in the seed.
 
 ## Does it act like an immutable map?
@@ -63,7 +63,7 @@ Yes. To maintain Clojure's immutability guarantee on maps, the seed is _merged
 into_ the result of the loader function, not the other way around.
 
 ```clojure
-user=> (seq (lazy-map {:foo "old"} (fn [_] {:foo "new" :bar "hi"})))
+user=> (seq (delayed-map {:foo "old"} (fn [_] {:foo "new" :bar "hi"})))
 ([:foo "old"] [:bar "hi"])
 ```
 
@@ -78,15 +78,15 @@ field is another database object. A pointer is nothing more than a map with the
 model class name and the object ID; if you need the full object, you have to
 load it based on this information.
 
-This process can be made transparent using lazy maps for pointers, delaying the
-actual request until it becomes necessary.
+This process can be made transparent using delayed maps for pointers, delaying
+the actual request until it becomes necessary.
 
 ```clojure
 (defn- load-pointer [{:keys [class-name object-id]}]
   (retrieve class-name object-id))
 
 (defn- ptr->obj [ptr]
-  (lazy-map
+  (delayed-map
     (select-keys ptr [:class-name :object-id])
     load-pointer))
 ```
@@ -103,7 +103,7 @@ seed. The reason for this is that we cannot allow something like the following
 to happen:
 
 ```clojure
-user=> (def lm (lazy-map {:foo 1 :bar 2} (fn [_] {:bar 3})))
+user=> (def lm (delayed-map {:foo 1 :bar 2} (fn [_] {:bar 3})))
 #'user/lm
 user=> (:bar (dissoc lm :bar))
 3

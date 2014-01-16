@@ -1,7 +1,7 @@
-(ns lazy-map.core
-  (:import (lazy_map LazyMap)))
+(ns delayed-map.core
+  (:import (delayed_map DelayedMap)))
 
-(defmethod print-method LazyMap [m w]
+(defmethod print-method DelayedMap [m w]
   (let [data (.getData m)]
     (if (realized? m)
       (print-method data w)
@@ -14,7 +14,7 @@
           (.write w ", "))
         (.write w "...}")))))
 
-(definline lazy-map
-  "Creates a lazy map with the given seed map and loader function."
+(definline delayed-map
+  "Creates a delayed map with the given seed map and loader function."
   [seed loader]
-  `(LazyMap. ~seed ~loader))
+  `(DelayedMap. ~seed ~loader))

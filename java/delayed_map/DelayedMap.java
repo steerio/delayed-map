@@ -1,14 +1,14 @@
-package lazy_map;
+package delayed_map;
 
 import clojure.lang.*;
 import java.util.Iterator;
 
-public class LazyMap implements IPending, Iterable, Associative, IPersistentCollection, IPersistentMap, Seqable, ILookup {
+public class DelayedMap implements IPending, Iterable, Associative, IPersistentCollection, IPersistentMap, Seqable, ILookup {
   private static IFn merge = RT.var("clojure.core", "merge");
   private IPersistentMap data;
   private IFn loader;
 
-  public LazyMap(IPersistentMap seed, IFn loader) {
+  public DelayedMap(IPersistentMap seed, IFn loader) {
     data = seed;
     this.loader = loader;
   }
@@ -61,13 +61,13 @@ public class LazyMap implements IPending, Iterable, Associative, IPersistentColl
 
   public IPersistentMap assoc(Object key, Object val) {
     IPersistentMap res = data.assoc(key, val);
-    if (loader != null) return new LazyMap(res, loader);
+    if (loader != null) return new DelayedMap(res, loader);
     return res;
   }
 
   public IPersistentMap assocEx(Object key, Object val) {
     IPersistentMap res = data.assocEx(key, val);
-    if (loader != null) return new LazyMap(res, loader);
+    if (loader != null) return new DelayedMap(res, loader);
     return res;
   }
 
