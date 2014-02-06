@@ -1,4 +1,4 @@
-(defproject delayed-map "0.1.0-SNAPSHOT"
+(defproject delayed-map "1.0.0"
   :description "Delayed Map"
   :url "http://github.com/steerio/delayed-map"
   :java-source-paths ["java"]
