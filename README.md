@@ -69,8 +69,8 @@ user=> (seq (delayed-map {:foo "old"} (fn [_] {:foo "new" :bar "hi"})))
 
 ## Any practical uses for this?
 
-I came up with the idea while coding a new, soon to be released client library
-for the [Parse](http://parse.com) platform.
+I came up with the idea while coding [Pundit](https://github.com/steerio/pundit),
+a client library for the [Parse](https://parse.com/) platform.
 
 The [Parse API](https://www.parse.com/docs/rest) returns so-called
 [pointers](https://www.parse.com/docs/rest#objects-types) when a value in a
